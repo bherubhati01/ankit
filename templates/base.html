@@ -1,0 +1,27 @@
+{% load static tailwind_tags %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pipel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    {% tailwind_css %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400..900&display=swap" rel="stylesheet">
+    <style>
+        *{
+            font-family: "Maven Pro", sans-serif;
+            font-optical-sizing: auto;
+        }
+    </style>
+</head>
+<body class="bg-slate-200">
+{% block body %}
+
+{% endblock body %}
+</body>
+</html>

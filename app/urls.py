@@ -1,0 +1,31 @@
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('login/', views.login_view, name='login_view'),
+    path('logout/', views.logout_view, name='logout_view'),
+    path('signup/', views.register, name='register'),
+    path('accountSettings/', views.accountSettings, name='accountSettings'),
+    path('home/', views.home, name='home'),
+    path('profile/', views.profile, name='profile'),
+    path('profile/<str:slug>/', views.profile_id, name='profile_id'),
+    path('upload/', views.upload, name='upload'),
+    path('post/', views.post, name='post'),
+    path('post/<str:username>/', views.post_page, name='post_page'),
+    path('like_count/', views.like_count, name='like_count'),
+    path('comment_list/<int:pk>', views.comment_list, name='comment_list'),
+    path('comment_get/<int:pk>', views.comment_get, name='comment_get'),
+    path('follow/<str:username>/', views.follow, name='follow'),
+    path('unfollow/<str:username>/', views.unfollow, name='unfollow'),
+    path('get_counts/<str:username>/', views.get_counts, name='get_counts'),
+    path('search/', views.search, name='search'),
+    path('notification/', views.notification, name='notification'),
+    path('followers/', views.followers, name='followers'),
+    path('following/', views.following, name='following'),
+    path('chats/', views.chat_list, name='chats'),
+    path('message/<str:pk>', views.message, name='detail'),
+    path('sent_msg/<str:pk>', views.sendMessages, name='sent_msg'),
+    path('rec_msg/<str:pk>', views.receivedMessages, name='rec_msg'),
+    path('notification/', views.chatNotification, name='notification'),
+]

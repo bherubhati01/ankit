@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    
+{% load static %}
+
+    <div class="container bg-slate-50 max-w-[393px] w-full h-[100vh] mx-auto shadow-transparent rounded-sm">
+        <section class="container h-full p-6 flex flex-col justify-evenly items-center">
+            <img src="{% static 'socialmedia.svg' %}" alt="">
+            <div class="flex flex-col justify-center items-center w-80">
+                <h1 class="font-bold text-4xl text-indigo-800">Login Here</h1>
+                <form class="my-6 flex flex-col justify-center w-full" method="post">
+                    {% csrf_token %}
+                    <input type="text" name="username" placeholder="Enter the Username" required class="border border-slate-500 rounded-3xl">
+                    <input type="password" name="password" placeholder="Enter the Password" required class="border border-slate-500 rounded-3xl my-3">
+                    <button type="submit" class="bg-green-400 py-3 my-4 border border-green-500 rounded-2xl">Login</button>
+                    <p class="text-center">Not a User? <a href="/signup">Sign Up</a></p>
+                </form>
+            </div>
+        </section>
+    </div>
+
+{% endblock body %}

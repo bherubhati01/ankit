@@ -1,0 +1,366 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    
+{% load static %}
+    
+<div class="container bg-slate-50 max-w-[393px] w-full min-h-[100vh] h-full mx-auto shadow-transparent rounded-sm">
+
+
+    
+    {% for post in posts %}
+        
+    
+        
+    <section class="">
+
+        <section class="container - border-b flex justify-start items-center shadow-transparent mx-auto py-2 px-6">
+            <div class="h-12 w-12 bg-indigo-200 rounded-full">
+                <img class="h-12 w-12 rounded-full object-contain" src="{{profile_image.url}}" alt="">
+            </div>
+            <div class="flex flex-col justify-center items-start mx-4">
+                <a class="font-bold">{{first_name}} {{last_name}}</a>
+                <a>@{{username}}</a>
+            </div>
+        </section>
+
+        <section class="- h-[460px] text-white font-bold border-b flex justify-center items-center">
+            <img class="h-[460px] object-contain" src="{{post.post.url}}" alt="">
+        </section>
+
+        <section>
+            <div class="flex justify-between items-center py-2 -">
+                <div class="mx-3">
+                    <button class="like" data-postid="{{post.id}}">
+                        {% if request.user in post.likes.all %}
+                        <svg id="postLike{{post.id}}" xmlns="http://www.w3.org/2000/svg" fill="red" viewBox="0 0 24 24" stroke-width="1.5" stroke="" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                        </svg>
+                        {% else %}
+                        <svg  id="postLike{{post.id}}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                        </svg>       
+                        {% endif %} 
+                    </button>
+                    <button class="open-comment-modal" data-commentid="{{post.id}}">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mx-1">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 0 1-.923 1.785A5.969 5.969 0 0 0 6 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337Z" />
+                          </svg>                      
+                    </button>
+                    <button>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mx-1">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                          </svg>                      
+                    </button>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mx-3">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+                  </svg>                                  
+            </div>
+            <div class="-">
+                <p class="mx-5"><strong>Liked</strong> by <span id="likeCount{{post.id}}">{{post.likes.count}}</span> people</p>
+            </div>
+            <div class="-">
+                <p class="mx-5">{{post.caption}}</p>
+            </div>
+            <div class="my-3 flex flex-col justify-center items-start mx-5 showComments" id="showComments{{post.id}}">
+                {% for comment in post.comments.all %}
+                    {% if forloop.counter <= 1 %}
+                        <p><strong>{{ comment.user.username }}</strong>: {{ comment.text }}</p>
+                    {% endif %}
+                {% endfor %}
+                {% if post.comments.count > 1 %}
+                    <a class="open-comment-modal" data-commentid="{{post.id}}">
+                        View all {{post.comments.count}} comments
+                    </a>
+                        
+                {% endif %}
+                
+            </div>
+            <div class="my-3 flex flex-col justify-center items-start mx-5 text-slate-500 text-sm">
+                <p>{{ post.created_at }}</p>
+            </div>
+        </section>
+          
+        <style>
+            #comments-box {
+                width: 400px;
+                margin: 20px auto;
+                background-color: #fff;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+            }
+    
+            .comment {
+                padding: 5px 10px;
+            }
+    
+            .user-avatar {
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                margin-right: 10px;
+            }
+    
+            .user-name {
+                font-weight: bold;
+            }
+    
+    
+            .comment-input {
+                padding: 10px;
+                border: none;
+                outline: none;
+                border-top: 1px solid #ddd;
+                box-sizing: border-box;
+            }
+    
+            .comment-input:focus {
+                border-bottom: 2px solid #3897f0;
+            }
+        </style>
+    
+        <div id="comments-box{{post.id}}" class="hidden" data-commentid={{post.id}}>
+            <div class="comment flex justify-start items-center">
+                <img src="{{profile_image.url}}" alt="User 1" class="user-avatar">
+                <span class="user-name">{{username}}</span>
+            </div>
+            <!-- Add more comments as needed -->
+        
+            <form id="comment-form" class="flex justify-center items-center" method="post" action="{% url 'comment_list' pk=post.pk %}">
+                {% csrf_token %}
+                <input type="text" name="commentfill" class="comment-input w-full" placeholder="Add a comment...">
+                <button class="py-[10px] px-3 border-t" type="submit">Save</button>
+            </form>
+        </div>
+        <div class="h-10 bg-slate-100 differ"></div>
+
+            
+    </section>
+
+    {% endfor %}
+
+    <div class="border-t bg-slate-50 h-10 fixed bottom-0 max-w-[393px] w-full flex justify-around items-center">
+        <a href="/home">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+            </svg>              
+        </a>
+        <a href="/search">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            </svg>              
+        </a>
+        <a href="/upload">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 10.5v6m3-3H9m4.06-7.19-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" />
+            </svg>              
+        </a>
+        <a href="/notification">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+            </svg>                  
+        </a> 
+        <a href="/profile">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+            </svg>              
+        </a>
+    </div>
+
+
+</div>
+
+
+<style>
+    .comment-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    position: absolute;
+    top: 64%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px 0;
+    border-radius: 5px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 6px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+textarea {
+    width: 100%;
+    height: 100px;
+    margin: 10px 0;
+}
+
+#submit-comment {
+    background-color: #3897f0;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+</style>
+
+
+<div class="comment-modal">
+    <div class="modal-content w-[393px]">
+        <span class="close-modal">&times;</span>
+        <div class="h-[400px] commentsData overflow-y-auto">
+           comments here...
+        </div>
+
+        <div>
+            <div class="comment flex justify-start items-center">
+                <img src="{{request.user.profile_image.url}}" alt="User 1" class="user-avatar bg-indigo-200"/>
+                <span class="user-name font-bold">{{request.user.username}}</span>
+            </div>
+            <form id="comment-form" class="flex justify-center items-center commentForm" method="post" data-commentid={{post.id}}>
+                {% csrf_token %}
+                <input type="text" id="comment{{post.id}}" name="commentfill" class="comment-input w-full" placeholder="Add a comment..."/>
+                <button class="py-[10px] px-3 border-t" type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+$(document).ready(function(){
+
+    $('.like').on('click', function(){
+        var postID = $(this).data('postid');
+        var likeButton = $(`#postLike${postID}`);
+        var countButton = $(`#likeCount${postID}`);
+        console.log(`#postLike${postID}`)
+
+        $.ajax({
+            type:"GET",
+            url:"/like_count/",
+            data:{'postid':postID},
+            success: function(response){
+                console.log(response)
+                    if (response.success) {
+                        console.log(likeButton)
+                        likeButton.attr("fill", "red" );
+                        likeButton.attr("stroke", "red" );
+                        
+                    } else {
+                        likeButton.attr("fill", "none" );
+                        likeButton.attr("stroke", "#000" );
+                    }
+                    console.log(countButton)
+                    countButton.text(response.total)
+            },
+            error: function(){
+                console.log("Error making the AJAX request.");
+            }
+        })
+    })
+
+
+
+    $('.commentForm').on('submit', function(e){
+            e.preventDefault();
+
+            var commentID = $(this).data('commentid');
+            console.log(cmtID);
+            var commentInput = $(`#comment${commentID}`);
+
+            $.ajax({
+                type:'POST',
+                url: `/comment_list/${cmtID}`,
+                dataType:'json',
+                data:{
+                    commentfill:commentInput.val(),
+                    csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                }, 
+                success:function(data){
+                    // console.log(data['comment'])
+                    // $(`#showComments${commentID}`).prepend(`<p><strong>${data.comment.user.username}</strong>: ${data.comment.text}</p>`)/
+
+                    $('.commentsData').prepend(`
+                    <section class=" mx-5 flex justify-start items-center p-3">
+                        <div class="w-12 h-12 bg-indigo-200 rounded-full flex justify-center items-center">
+                            <img src="${data.comment.user.profile_image}" class="h-12 object-contain rounded-full" alt="" >
+                        </div>
+                        <div class="mx-3 flex flex-col justify-center items-start">
+                            <p class="font-semibold">${data.comment.user.username}</p>
+                            <p>${data.comment.text}</p>
+                        </div>
+                    </section>
+                    `)
+
+            
+                }       
+            })
+        })
+
+
+        $(".open-comment-modal").click(function() {
+        $(".comment-modal").css("display", "block");
+
+        var commentID = $(this).data('commentid');    
+        cmtID = commentID
+        $.ajax({
+            type:'GET',
+            url:`/comment_get/${commentID}`,
+            success: function(response){
+
+                $('.commentsData').empty();
+
+                response.comments.map((item)=>{
+                    $('.commentsData').append(`
+                    <section class=" mx-5 flex justify-start items-center p-3">
+                        <div class="w-12 h-12 bg-indigo-200 rounded-full flex justify-center items-center">
+                            <img src="${item.comment_profile_image}" class="h-12 object-contain rounded-full" alt="" >
+                        </div>
+                        <div class="mx-3 flex flex-col justify-center items-start">
+                            <p class="font-semibold">${item.comment_user}</p>
+                            <p>${item.comment_text}</p>
+                        </div>
+                    </section>
+                    `)
+
+                })
+                
+            },
+        })
+    });
+
+    $(".close-modal").click(function() {
+        $(".comment-modal").css("display", "none");
+    });
+
+    $("#submit-comment").click(function() {
+        var commentText = $("#comment-text").val();
+        // Add your logic to submit the comment to the server or update the UI
+        // For simplicity, just hiding the modal in this example
+        $(".comment-modal").css("display", "none");
+    });
+    
+
+});
+
+
+</script>
+
+{% endblock body %}
